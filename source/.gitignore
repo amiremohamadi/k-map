@@ -1,3 +1,6 @@
 # Compiled files
 out
 *.out
+
+# Test
+main.cpp
