@@ -2,6 +2,11 @@
 #include <iostream>
 using namespace std;
 
+#define SIZE 4
+
+string compareStrings(string, string); // Compare two strings and return same chars
+bool isAvilable(string, char);
+
 simplifier::simplifier(map m) { m.getMatrix(matrix); } //????
 simplifier::~simplifier(){}
 
@@ -16,7 +21,7 @@ void simplifier::makeCubes(superList &groups, int i, int j)
     temp.i = i; temp.j = j;
     group.append(temp);
 
-    for (unsigned int k = 0; k < 4; ++k)
+    for (unsigned int k = 0; k < SIZE; ++k)
     {
         // Doual
         if(matrix[(i+d[k][0]+4)%4][(j+d[k][1]+4)%4] == 1)
@@ -77,20 +82,99 @@ void simplifier::makeCubes(superList &groups, int i, int j)
 		groups.append(group);
 }
 
-void simplifier::run()
+bool simplifier::subset(list l1, list l2)
+{
+	// Check if all members of l1 are in l2
+	for(int i = 0; i < l1.size(); i++){
+		bool found = false;
+		
+		for(int j = 0; j < l2.size(); j++)
+			if(l1.get(i).i*SIZE + l1.get(i).j == l2.get(j).i*SIZE + l2.get(j).j)
+			{
+				found = true;
+				break;
+			}
+
+		// If not found it means that l1 and l2 aren't subsets
+		if(!found)
+			return false;
+	}
+	return true;
+}
+
+void simplifier::optimize(superList &groups)
+{
+	superList temp;
+	// Remove subsets
+	for(unsigned int i = 0; i < groups.size(); ++i)
+	{
+		bool sub = false;
+		for (unsigned int j = 0; j < temp.size(); ++j)
+		{
+			// Ignore itself (i != j)
+			if(i != j && subset(groups.get(i), temp.get(j)))
+			{
+				sub = true;
+				break;
+			}
+		}
+		if (!sub)
+			temp.append(groups.get(i));
+	}
+	groups = temp;
+}
+
+string simplifier::parseToExp(list group)
 {
 
-	for (int i = 0; i < 4; ++i)
-	{	for (int j = 0; j < 4; ++j)
-			cout << matrix[i][j] << " ";
-	cout << "\n";}
+	string result;
+	string columns[] = {"cd","cD","CD","Cd"};
+	string rows[] = {"ab","aB","AB","Ab"};
+
+	string temp2 = columns[group.get(0).j] + rows[group.get(0).i];
+
+	for(int i = 0; i < group.size(); i++)
+	{
+		result = "";
+		string temp1 = columns[group.get(i).j] + rows[group.get(i).i];
+
+		for(int j = 0; j < temp2.size(); j++)
+			if(temp1.find(temp2[j]) != -1)
+				result += temp2[j];
+
+		temp2 = result;
+	}
+
+	return result;
+}
+
+void simplifier::run()
+{
     superList groups;
-    for (int i = 0; i < 4; i++)
+
+    for (int i = 0; i < SIZE; ++i)
     {
-        for(int j = 0; j < 4; j++){	
+        for(int j = 0; j < SIZE; ++j){	
 			if(matrix[i][j] == 1)
-				makeCubes(groups,i,j);			
+				makeCubes(groups, i, j);			
 		}
 	}
-    groups.print();
+	optimize(groups);
+
+	bool firstExp = true;
+	string result;
+	for (int i = 0; i < groups.size(); i++)
+	{
+		if (!firstExp)
+		{
+			result = result + "+" + parseToExp(groups.get(i));
+		}
+		else
+		{
+			firstExp = false;
+			result = result + parseToExp(groups.get(i));
+		}
+	}
+	cout << result;
+
 }

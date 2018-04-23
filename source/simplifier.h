@@ -11,5 +11,8 @@ class simplifier
       simplifier(map);
       ~simplifier();
       void makeCubes(superList&, int, int);
+      bool subset(list, list); // Check is a group subset of another
+      void optimize(superList&);
+      string parseToExp(list);
       void run();
-};
+};    

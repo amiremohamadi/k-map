@@ -10,14 +10,13 @@ using namespace std;
 
 int main(void)
 {
-  int a[4] = {1, 2, 3, 4};
+  int a[9] = {0, 1, 3, 4, 5, 7, 12, 13, 15};
   map m;
-  m.parseToMap(a, 4);
+  m.parseToMap(a, 9);
   m.printMap();
   cout << "\n";
 
   simplifier s(m);
   
   s.run();
-  // this is main :)))
 }

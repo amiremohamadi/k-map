@@ -7,7 +7,7 @@ class map
 {
     private:
       int matrix[SIZE][SIZE] = {0}; // Map matrix
-    
+
     public:
       map();
       ~map();

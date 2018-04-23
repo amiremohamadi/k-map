@@ -12,19 +12,22 @@ class list
       void append(Pair);
       void clear();
       Pair get(int);
+      int size();
       void print();
 };
 
 class superList
 {
     private:
-      list arr[16];
+      list arr[64];
       int pointer = 0;
 
     public:
       superList();
       void append(list);
+      void remove(int);
       void clear();
       list get(int);
+      int size();
       void print();
 };
