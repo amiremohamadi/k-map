@@ -1,6 +1,5 @@
 #include <iostream>
 #include "map.h"
-using std::stoi;
 using std::cout;
 
 #define SIZE 4

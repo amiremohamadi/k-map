@@ -4,8 +4,6 @@ using namespace std;
 
 #define SIZE 4
 
-string compareStrings(string, string); // Compare two strings and return same chars
-bool isAvilable(string, char);
 
 simplifier::simplifier(map m) { m.getMatrix(matrix); } //????
 simplifier::~simplifier(){}
@@ -77,7 +75,7 @@ void simplifier::makeCubes(superList &groups, int i, int j)
 			found = true;
 		} 
 	}	
-	// If there's no group, push the unit
+	// If there's no group, push the single
 	if(!found)
 		groups.append(group);
 }
@@ -102,6 +100,19 @@ bool simplifier::subset(list l1, list l2)
 	return true;
 }
 
+bool simplifier::commonPair(Pair pair, superList groups, int skip)
+{
+	// Searchig for common pairs
+	for(unsigned int i = 0; i < groups.size(); i++)
+		for(unsigned int j = 0; j < groups.get(i).size(); j++)
+			// Dont compare a group pairs to itself!!! (i != skip)
+			if(i != skip && groups.get(i).get(j).i*4 + groups.get(i).get(j).j == pair.i*4 + pair.j)
+				return true;
+
+	// If there's no common pairs then return false
+	return false;
+}
+
 void simplifier::optimize(superList &groups)
 {
 	superList temp;
@@ -110,15 +121,35 @@ void simplifier::optimize(superList &groups)
 	{
 		bool sub = false;
 		for (unsigned int j = 0; j < temp.size(); ++j)
-		{
 			// Ignore itself (i != j)
 			if(i != j && subset(groups.get(i), temp.get(j)))
 			{
 				sub = true;
 				break;
 			}
-		}
+
 		if (!sub)
+			temp.append(groups.get(i));
+	}
+	groups = temp;
+	// ---------------------------------------------------
+
+	// Remove common pairs
+	temp.clear(); // We wanna use temp another time! so clear it and use again :-)
+	bool common;
+	for(int i = 0; i < groups.size(); i++)
+	{
+		// Check every group in groups and find that if
+		// there are some elements that are placed in several cubes
+		common = true;
+		for(int j = 0; j < groups.get(i).size(); j++)
+			if(!commonPair(groups.get(i).get(j), groups, i))
+			{
+				common = false;
+				break;
+			}
+
+		if(!common)
 			temp.append(groups.get(i));
 	}
 	groups = temp;
@@ -150,8 +181,8 @@ string simplifier::parseToExp(list group)
 
 void simplifier::run()
 {
+	// First : make a group and find cubes then store them in the group
     superList groups;
-
     for (int i = 0; i < SIZE; ++i)
     {
         for(int j = 0; j < SIZE; ++j){	
@@ -159,22 +190,28 @@ void simplifier::run()
 				makeCubes(groups, i, j);			
 		}
 	}
+	
+	// Optimize : remove redundant cubes
 	optimize(groups);
+	
+	// Print cubes
+	cout << "\nCubes:\n";
+	groups.print();
+	cout << "\n";
 
+	// Make result expression and print it!
 	bool firstExp = true;
 	string result;
 	for (int i = 0; i < groups.size(); i++)
 	{
 		if (!firstExp)
-		{
 			result = result + "+" + parseToExp(groups.get(i));
-		}
 		else
 		{
 			firstExp = false;
 			result = result + parseToExp(groups.get(i));
 		}
 	}
-	cout << result;
-
+	// Yooohoooo we did it! :))
+	cout << result << "\n";
 }

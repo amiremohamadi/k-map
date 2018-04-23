@@ -10,13 +10,27 @@ using namespace std;
 
 int main(void)
 {
-  int a[9] = {0, 1, 3, 4, 5, 7, 12, 13, 15};
-  map m;
-  m.parseToMap(a, 9);
-  m.printMap();
+  int size;
+  cout << "Number of minterms: ";
+  cin >> size;
+
+  // Dynamic array
+  int *minterm = new int[size];
+  if (minterm == 0) // If there was no enough space
+    exit(0);
+  // Get minterms and put them in an array
+  cout << "Minterms: ";
+  for (unsigned int i = 0; i < size; ++i)
+    cin >> minterm[i];
+
+  map map;
+  map.parseToMap(minterm, size);
+  // Print map
+  cout << "\nK-Map:\n";
+  map.printMap();
   cout << "\n";
 
-  simplifier s(m);
+  simplifier simplify(map);
   
-  s.run();
+  simplify.run();
 }
