@@ -4,10 +4,10 @@ using namespace std;
 
 #define SIZE 4
 
-
-simplifier::simplifier(map m) { m.getMatrix(matrix); } //????
+simplifier::simplifier(map m) { m.getMatrix(matrix); }
 simplifier::~simplifier(){}
 
+// Ok Ok Ok! Honestly this funciton is not mine! but i changed it a little :)
 void simplifier::makeCubes(superList &groups, int i, int j)
 {
     list group;
@@ -29,7 +29,7 @@ void simplifier::makeCubes(superList &groups, int i, int j)
 
             // Linear quad
             if(matrix[(i+2*d[k][0]+4)%4][(j+2*d[k][1]+4)%4] == 1 && 
-				matrix[(i+3*d[k][0+4])%4][(j+3*d[k][1]+4)%4] == 1)
+				matrix[(i+3*d[k][0]+4)%4][(j+3*d[k][1]+4)%4] == 1)
             {
                 temp.i = (i+2*d[k][0]+4)%4; temp.j =(j+2*d[k][1]+4)%4;
                 group.append(temp);
@@ -83,10 +83,11 @@ void simplifier::makeCubes(superList &groups, int i, int j)
 bool simplifier::subset(list l1, list l2)
 {
 	// Check if all members of l1 are in l2
-	for(int i = 0; i < l1.size(); i++){
+	for(unsigned int i = 0; i < l1.size(); ++i)
+	{
 		bool found = false;
 		
-		for(int j = 0; j < l2.size(); j++)
+		for(unsigned int j = 0; j < l2.size(); ++j)
 			if(l1.get(i).i*SIZE + l1.get(i).j == l2.get(j).i*SIZE + l2.get(j).j)
 			{
 				found = true;
@@ -103,10 +104,10 @@ bool simplifier::subset(list l1, list l2)
 bool simplifier::commonPair(Pair pair, superList groups, int skip)
 {
 	// Searchig for common pairs
-	for(unsigned int i = 0; i < groups.size(); i++)
-		for(unsigned int j = 0; j < groups.get(i).size(); j++)
+	for(unsigned int i = 0; i < groups.size(); ++i)
+		for(unsigned int j = 0; j < groups.get(i).size(); ++j)
 			// Dont compare a group pairs to itself!!! (i != skip)
-			if(i != skip && groups.get(i).get(j).i*4 + groups.get(i).get(j).j == pair.i*4 + pair.j)
+			if(i != skip && groups.get(i).get(j).i*SIZE + groups.get(i).get(j).j == pair.i*SIZE + pair.j)
 				return true;
 
 	// If there's no common pairs then return false
@@ -137,7 +138,7 @@ void simplifier::optimize(superList &groups)
 	// Remove common pairs
 	temp.clear(); // We wanna use temp another time! so clear it and use again :-)
 	bool common;
-	for(int i = 0; i < groups.size(); i++)
+	for(int i = 0; i < groups.size(); ++i)
 	{
 		// Check every group in groups and find that if
 		// there are some elements that are placed in several cubes
@@ -164,12 +165,12 @@ string simplifier::parseToExp(list group)
 
 	string temp2 = columns[group.get(0).j] + rows[group.get(0).i];
 
-	for(int i = 0; i < group.size(); i++)
+	for(unsigned int i = 0; i < group.size(); ++i)
 	{
 		result = "";
 		string temp1 = columns[group.get(i).j] + rows[group.get(i).i];
 
-		for(int j = 0; j < temp2.size(); j++)
+		for(unsigned int j = 0; j < temp2.size(); ++j)
 			if(temp1.find(temp2[j]) != -1)
 				result += temp2[j];
 
@@ -193,7 +194,7 @@ void simplifier::run()
 	
 	// Optimize : remove redundant cubes
 	optimize(groups);
-	
+
 	// Print cubes
 	cout << "\nCubes:\n";
 	groups.print();

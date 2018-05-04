@@ -4,8 +4,6 @@ using std::cout;
 
 #define SIZE 4
 
-inline int convertToGray(int);
-
 map::map(){};
 map::~map(){};
 
@@ -39,4 +37,4 @@ void map::printMap() const
 }
 // Ohhh! I found this method at stackoverflow.com :))
 // Shift a bit to right and then xor with it
-inline int convertToGray(int n) { return (n >> 1) ^ n; }
+inline int map::convertToGray(int n) { return (n >> 1) ^ n; }

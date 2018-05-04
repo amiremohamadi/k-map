@@ -16,15 +16,18 @@ int main(void)
 
   // Dynamic array
   int *minterm = new int[size];
-  if (minterm == 0) // If there was no enough space
-    exit(0);
+  // If don't have enough space
+  if (!minterm) exit(0);
+  
   // Get minterms and put them in an array
   cout << "Minterms: ";
   for (unsigned int i = 0; i < size; ++i)
     cin >> minterm[i];
 
+  // Create a map
   map map;
   map.parseToMap(minterm, size);
+  
   // Print map
   cout << "\nK-Map:\n";
   map.printMap();
