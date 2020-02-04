@@ -6,7 +6,7 @@ using std::string;
 class map
 {
     private:
-      int matrix[SIZE][SIZE] = {0}; // Map matrix
+      int matrix[SIZE][SIZE] = {}; // Map matrix
       inline int convertToGray(int);
 
     public:
