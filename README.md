@@ -13,7 +13,7 @@ cmake ..
 make
 ```
 
-# Windows with MinGW
+## Windows with MinGW
 
 ```sh
 mkdir build
